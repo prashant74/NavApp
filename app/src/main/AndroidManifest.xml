@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.prashant.snapbug">
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <application
+      android:allowBackup="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:supportsRtl="true"
+      android:theme="@style/AppTheme">
+    <activity
+        android:name=".MainActivity"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme.NoActionBar">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+
+    <!-- If you have specified applicationId in build.gradle file then replace [YOUR_PACKAGE_NAME] with applicationId-->
+    <!-- MOENGAGE RECEIVER FOR RECEIVING APP UPDATE INTENT -->
+    <receiver android:name="com.moe.pushlibrary.AppUpdateReceiver">
+      <intent-filter>
+        <action android:name="android.intent.action.PACKAGE_REPLACED"/>
+        <data
+            android:path="com.example.prashant.snapbug"
+            android:scheme="package"/>
+      </intent-filter>
+    </receiver>
+
+    <!-- The underlying content provider -->
+    <provider android:name="com.moe.pushlibrary.providers.MoEProvider"
+        android:authorities="com.example.prashant.snapbug.moengage.provider"
+        android:exported="false"/>
+
+    <meta-data
+        android:name="APP_ID"
+        android:value="MAZW5N1IMMSH5H67C3T9KBHB"/>
+
+    <meta-data
+        android:name="SENDER_ID"
+        android:value="id:1086695246762"/>
+
+    <activity
+        android:name="com.moe.pushlibrary.activities.MoEActivity"
+        android:label="[ACTIVITY_NAME]"
+        android:parentActivityName=".MainActivity">
+      <!-- Parent activity meta-data to support 4.0 and lower -->
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value=".MainActivity"/>
+      <meta-data
+          android:name="showInApp"
+          android:value="false"/>
+    </activity>
+
+    <!-- MOENGAGE RECEIVER FOR RECEIVING INSTALLATION INTENT -->
+    <receiver android:name="com.moe.pushlibrary.InstallReceiver">
+      <intent-filter>
+        <action android:name="com.android.vending.INSTALL_REFERRER"/>
+      </intent-filter>
+    </receiver>
+
+  </application>
+
+</manifest>
