@@ -3,6 +3,17 @@
     package="com.example.prashant.snapbug">
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+
+  <!-- If you have specified applicationId in build.gradle file then replace [YOUR_PACKAGE_NAME] with applicationId-->
+  <permission android:name="com.example.prashant.snapbug.permission.C2D_MESSAGE"
+      android:protectionLevel="signature"/>
+  <uses-permission android:name="com.example.prashant.snapbug.permission.C2D_MESSAGE"/>
+  <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+  <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+
   <application
       android:allowBackup="true"
       android:icon="@mipmap/ic_launcher"
@@ -20,8 +31,6 @@
       </intent-filter>
     </activity>
 
-    <!-- If you have specified applicationId in build.gradle file then replace [YOUR_PACKAGE_NAME] with applicationId-->
-    <!-- MOENGAGE RECEIVER FOR RECEIVING APP UPDATE INTENT -->
     <receiver android:name="com.moe.pushlibrary.AppUpdateReceiver">
       <intent-filter>
         <action android:name="android.intent.action.PACKAGE_REPLACED"/>
@@ -63,6 +72,30 @@
         <action android:name="com.android.vending.INSTALL_REFERRER"/>
       </intent-filter>
     </receiver>
+
+    <receiver android:name="com.moe.pushlibrary.PushGcmBroadcastReceiver"
+        android:permission="com.google.android.c2dm.permission.SEND" >
+      <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+        <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+        <category android:name="com.example.prashant.snapbug" />
+      </intent-filter>
+    </receiver>
+
+    <meta-data
+        android:name="APP_ID"
+        android:value="MAZW5N1IMMSH5H67C3T9KBHB"/>
+
+    <meta-data
+        android:name="SENDER_ID"
+        android:value="id:1086695246762"/>
+
+    <meta-data
+        android:name="NOTIFICATION_TYPE"
+        android:value="@integer/notification_type_multiple"/>
+    <meta-data
+        android:name="NOTIFICATION_LARGE_ICON"
+        android:value="@drawable/ic_launcher"/>
 
   </application>
 
