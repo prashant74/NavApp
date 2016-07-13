@@ -1,58 +1,28 @@
 package com.example.prashant.snapbug;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 
-public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements OnNavClickListener {
+
+  FrameLayout content;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_main);
+    setContentView(R.layout.content_main);
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
-
-    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-    fab.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
-        Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-            .setAction("Action", null)
-            .show();
-      }
-    });
-
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    ActionBarDrawerToggle toggle =
-        new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-    drawer.setDrawerListener(toggle);
-    toggle.syncState();
-
-    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-    navigationView.setNavigationItemSelectedListener(this);
-    FragmentManager fragmentManager = getFragmentManager();
-    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    FragmentA fragment = new FragmentA();
-    fragmentTransaction.add(R.id.content, fragment);
-    fragmentTransaction.commit();
+    content = (FrameLayout) findViewById(R.id.content);
+    showCategories();
   }
 
   @Override public void onBackPressed() {
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    if (drawer.isDrawerOpen(GravityCompat.START)) {
-      drawer.closeDrawer(GravityCompat.START);
-    } else {
-      super.onBackPressed();
-    }
+    super.onBackPressed();
   }
 
   @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,35 +45,48 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     return super.onOptionsItemSelected(item);
   }
 
-  @SuppressWarnings("StatementWithEmptyBody") @Override public boolean onNavigationItemSelected(MenuItem item) {
-    // Handle navigation view item clicks here.
-    int id = item.getItemId();
-    FragmentManager fragmentManager = getFragmentManager();
-    FragmentTransaction transaction = fragmentManager.beginTransaction();
-    if (id == R.id.nav_camera) {
-      FragmentA fragmentA = new FragmentA();
-      transaction.replace(R.id.content, fragmentA);
-      transaction.addToBackStack(null);
-      // Commit the transaction
-      transaction.commit();
-    } else if (id == R.id.nav_gallery) {
-      FragmentB fragmentB = new FragmentB();
-      transaction.replace(R.id.content, fragmentB);
-      transaction.addToBackStack(null);
-      // Commit the transaction
-      transaction.commit();
-    } else if (id == R.id.nav_slideshow) {
+  @Override protected void onSaveInstanceState(final Bundle outState) {
+    outState.putInt("key", 0);
+    super.onSaveInstanceState(outState);
+  }
 
-    } else if (id == R.id.nav_manage) {
+  private final Handler mDrawerActionHandler = new Handler();
 
-    } else if (id == R.id.nav_share) {
+  private void showCategories() {
+    mDrawerActionHandler.postDelayed(new Runnable() {
+      @Override public void run() {
+        FragmentA fragment = new FragmentA();
+        Bundle data = new Bundle();
+        data.putString("key", "value");
+        fragment.setArguments(data);
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.content, fragment, "Fragment")
+            .addToBackStack(null)
+            .commit();
+      }
+    }, 300);
+  }
 
-    } else if (id == R.id.nav_send) {
+  @Override public void onNavClick(View view) {
+    navigate(view.getId());
+  }
 
+  private void navigate(int id) {
+    switch (id) {
+      case R.id.nav_camera:
+      case R.id.FragBButton:
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.content, new FragmentA(), "Fragment")
+            .addToBackStack(null)
+            .commit();
+        break;
+      case R.id.nav_gallery:
+      case R.id.FragAButton:
+        getSupportFragmentManager().beginTransaction()
+            .replace(R.id.content, new FragmentB(), "Fragment")
+            .addToBackStack(null)
+            .commit();
+        break;
     }
-
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    drawer.closeDrawer(GravityCompat.START);
-    return true;
   }
 }
